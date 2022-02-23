@@ -1,0 +1,32 @@
+---
+version: "3.4"
+services:
+  bitcoind:
+    image: "bitcoind:latest"
+    network_mode: "host"
+    volumes:
+      - "bitcoind:/bitcoin/.bitcoin"
+    restart: "always"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "1"
+  electrumx:
+    image: "electrumx:latest"
+    network_mode: "host"
+    volumes:
+      - "electrumx:/data"
+    restart: "always"
+    environment:
+      COIN: "Bitcoin"
+      DAEMON_URL: "http://bitcoinrpc:${BITCOIND_RPC_PASS}@localhost:8332"
+      SERVICES: "tcp://:50001,ssl://:50002,wss://:50004,rpc://"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "1"
+volumes:
+  bitcoind:
+  electrumx:
