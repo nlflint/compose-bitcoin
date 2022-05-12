@@ -2,7 +2,9 @@
 version: "3.4"
 services:
   bitcoind:
-    image: "bitcoind:latest"
+    container_name: "bitcoind"
+    image: "bitcoind:22.0"
+    pull_policy: "never"
     network_mode: "host"
     volumes:
       - "bitcoind:/bitcoin/.bitcoin"
@@ -12,16 +14,22 @@ services:
       options:
         max-size: "10M"
         max-file: "1"
-  electrumx:
-    image: "electrumx:latest"
+  electrs:
+    container_name: "electrs"
+    image: "electron-rs:0.9.5"
+    pull_policy: "never"
+    command: [
+      "--conf", "/data/config.toml"
+    ]
+    environment:
+      - ELECTRS_ELECTRUM_RPC_ADDR=0.0.0.0:50001
+      - ELECTRS_DB_DIR=/data
+      - ELECTRS_LOG_FILTERS=INFO
+      - ELECTRS_MONITORING_ADDR=0.0.0.0:4224
     network_mode: "host"
     volumes:
-      - "electrumx:/data"
+      - "electron-rs:/data"
     restart: "always"
-    environment:
-      COIN: "Bitcoin"
-      DAEMON_URL: "http://bitcoinrpc:${BITCOIND_RPC_PASS}@localhost:8332"
-      SERVICES: "tcp://:50001,ssl://:50002,wss://:50004,rpc://"
     logging:
       driver: "json-file"
       options:
@@ -29,4 +37,4 @@ services:
         max-file: "1"
 volumes:
   bitcoind:
-  electrumx:
+  electron-rs:
