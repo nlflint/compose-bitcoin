@@ -8,7 +8,7 @@ services:
     network_mode: "host"
     volumes:
       - "bitcoind:/bitcoin/.bitcoin"
-    restart: "always"
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -29,7 +29,7 @@ services:
     network_mode: "host"
     volumes:
       - "electron-rs:/data"
-    restart: "always"
+    restart: unless-stopped
     logging:
       driver: "json-file"
       options:
@@ -38,7 +38,7 @@ services:
   exporter:
     container_name: bitcoind-exporter
     image: bitcoin-prometheus-exporter:0.7.0
-    restart: "always"
+    restart: unless-stopped
     network_mode: host
     environment:
       BITCOIN_RPC_HOST: localhost
@@ -65,14 +65,14 @@ services:
     volumes:
       - "clightning:/root/.lightning"
       - "cln-rest-certs:/c-lightning-REST/certs"
-    restart: "always"
+    restart: unless-stopped
     network_mode: host
     depends_on:
       - bitcoind
   rtl:
     container_name: rtl
     image: shahanafarooqui/rtl:0.12.3
-    restart: always
+    restart: unless-stopped
     depends_on:
       - clightning
     volumes:
@@ -80,6 +80,7 @@ services:
       - rtl_db:/database
       - ./rtl/RTL-Config.json:/RTL/RTL-Config.json
     network_mode: host
+    
 volumes:
   bitcoind:
   electron-rs:
