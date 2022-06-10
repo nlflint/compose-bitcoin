@@ -1,0 +1,8 @@
+{
+    "PORT": 3001,
+    "DOCPORT": 4001,
+    "PROTOCOL": "https",
+    "EXECMODE": "production",
+    "RPCCOMMANDS": ["*"],
+    "DOMAIN": "rodan.lan"
+}

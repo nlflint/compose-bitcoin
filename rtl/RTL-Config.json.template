@@ -1,0 +1,31 @@
+{
+  "port": "{custom RTL port, or 3010}",
+  "defaultNodeIndex": 1,
+  "SSO": {
+    "rtlSSO": 0,
+    "rtlCookiePath": "",
+    "logoutRedirectLink": ""
+  },
+  "nodes": [
+    {
+      "index": 1,
+      "lnNode": "Node 1",
+      "lnImplementation": "CLN",
+      "Authentication": {
+        "macaroonPath": "/rest-certs",
+        "configPath": ""
+      },
+      "Settings": {
+        "userPersona": "MERCHANT",
+        "themeMode": "NIGHT",
+        "themeColor": "PURPLE",
+        "bitcoindConfigPath": "",
+        "logLevel": "DEBUG",
+        "fiatConversion": true,
+        "lnServerUrl": "https://{your-ln-server-rest-endpoint:3001}",
+        "currencyUnit": "USD"
+      }
+    }
+  ],
+  "multiPass": "password"
+}

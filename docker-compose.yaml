@@ -35,6 +35,55 @@ services:
       options:
         max-size: "10M"
         max-file: "1"
+  exporter:
+    container_name: bitcoind-exporter
+    image: bitcoin-prometheus-exporter:0.7.0
+    restart: "always"
+    network_mode: host
+    environment:
+      BITCOIN_RPC_HOST: localhost
+      BITCOIN_RPC_USER: "bitcoinrpc"
+      BITCOIN_RPC_PASSWORD: "${BITCOIND_RPC_PASS}"
+      REFRESH_SECONDS: 5
+      LOG_LEVEL: "INFO"
+    depends_on:
+      - bitcoind
+  clightning:
+    container_name: clightning
+    image: clightning-with-rest:22.0
+    command: [
+      "--plugin=/c-lightning-REST/plugin.js",
+      "--rest-domain=rodan.lan",
+      "--network=bitcoin",
+      "--bitcoin-rpcuser=bitcoinrpc",
+      "--bitcoin-rpcpassword=${BITCOIND_RPC_PASS}",
+      "--bitcoin-rpcconnect=localhost",
+      "--addr=0.0.0.0:9735"
+    ]
+    environment:
+      EXPOSE_TCP: true
+    volumes:
+      - "clightning:/root/.lightning"
+      - "cln-rest-certs:/c-lightning-REST/certs"
+    restart: "always"
+    network_mode: host
+    depends_on:
+      - bitcoind
+  rtl:
+    container_name: rtl
+    image: shahanafarooqui/rtl:0.12.3
+    restart: always
+    depends_on:
+      - clightning
+    volumes:
+      - cln-rest-certs:/rest-certs:ro
+      - rtl_db:/database
+      - ./rtl/RTL-Config.json:/RTL/RTL-Config.json
+    network_mode: host
 volumes:
   bitcoind:
   electron-rs:
+  clightning:
+  cln-rest-certs:
+  rtl_db:
+
