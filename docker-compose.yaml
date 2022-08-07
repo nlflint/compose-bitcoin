@@ -3,7 +3,7 @@ version: "3.4"
 services:
   bitcoind:
     container_name: "bitcoind"
-    image: "bitcoind:22.0"
+    image: "bitcoind:23.0"
     pull_policy: "never"
     network_mode: "host"
     volumes:
@@ -50,15 +50,16 @@ services:
       - bitcoind
   clightning:
     container_name: clightning
-    image: clightning-with-rest:22.0
+    image: lightning:0.11.1-custom
     command: [
       "--plugin=/c-lightning-REST/plugin.js",
+      "--plugin=/peerswap/peerswap-plugin",
+      "--log-level=debug:plugin-peerswap-plugin",
       "--rest-domain=rodan.lan",
       "--network=bitcoin",
       "--bitcoin-rpcuser=bitcoinrpc",
       "--bitcoin-rpcpassword=${BITCOIND_RPC_PASS}",
       "--bitcoin-rpcconnect=localhost",
-      "--addr=0.0.0.0:9735"
     ]
     environment:
       EXPOSE_TCP: true
