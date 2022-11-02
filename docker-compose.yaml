@@ -16,10 +16,10 @@ services:
         max-file: "1"
   electrs:
     container_name: "electrs"
-    image: "electron-rs:0.9.5"
+    image: "electrs:0.9.9"
     pull_policy: "never"
     command: [
-      "--conf", "/data/config.toml"
+      "electrs", "--conf", "/data/config.toml"
     ]
     environment:
       - ELECTRS_ELECTRUM_RPC_ADDR=0.0.0.0:50001
@@ -50,7 +50,7 @@ services:
       - bitcoind
   clightning:
     container_name: clightning
-    image: lightning:0.11.1-custom
+    image: lightning:0.11.1-rtl-peerswap
     command: [
       "--plugin=/c-lightning-REST/plugin.js",
       "--plugin=/peerswap/peerswap-plugin",
@@ -72,7 +72,7 @@ services:
       - bitcoind
   rtl:
     container_name: rtl
-    image: shahanafarooqui/rtl:0.12.3
+    image: rtl:peerswap
     restart: unless-stopped
     depends_on:
       - clightning
